@@ -1,0 +1,17 @@
+model:
+  name: "densenet121"
+  pretrained: true
+
+classifier:
+  dropout: 0.2  #tắt 20% số lượng neuron trong lớp fully connected để tránh overfitting
+  num_classes: 1  #số lượng lớp output, 1 lớp output vì đây là bài toán phân loại nhị phân (có bệnh hoặc không có bệnh)
+
+training:
+  loss: "bce_with_logits"  #hàm mất mát nhị phân (binary cross entropy) với logits, phù hợp cho bài toán phân loại nhị phân
+  batch_size: 32  #load 32 ảnh mỗi lần, tăng batch size sẽ tăng tốc độ huấn luyện nhưng cũng tốn nhiều bộ nhớ hơn
+  epochs: 20  #số lần lặp qua toàn bộ tập dữ liệu huấn luyện, tăng số epochs sẽ giúp mô hình học tốt hơn nhưng cũng dễ bị overfitting
+
+optimizer:
+  name: "adam" 
+  learning_rate: 0.0001  #tốc đỘ học: mỗi lần học điều chỉnh khoảng 0.0001 
+  weight_decay: 0.0001  #giảm trọng số của các tham số trong mô hình để tránh phụ thuộc trọng số lệch

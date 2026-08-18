@@ -1,0 +1,19 @@
+project:
+  name: "detect-pneumonia-ai"
+  seed: 42
+
+data:
+  root: "data"
+  train_dir: "data/raw/train"
+  val_dir: "data/raw/val"
+  test_dir: "data/raw/test"
+  metadata_dir: "data/metadata"
+
+  image_size: 224
+  num_channels: 3  #số màu rgb
+
+output:
+  root: "outputs"
+  checkpoints: "outputs/checkpoints"
+  reports: "outputs/reports"
+  logs: "outputs/logs"
