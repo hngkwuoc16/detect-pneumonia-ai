@@ -1,0 +1,1 @@
+pHash, Hamming distance, phân tích histogram của Hamming distance
