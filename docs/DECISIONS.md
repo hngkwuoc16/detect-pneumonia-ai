@@ -27,3 +27,14 @@
 
 ### 7. Đọc grayscale rồi nhân bản 3 kênh
 - **Lý do**: Đảm bảo mọi ảnh đều là grayscale thật sự, tránh nhiễu màu từ scanner. Pretrained models yêu cầu input 3 kênh.
+
+## Phase 3: Augmentation
+
+### 8. Chọn các phép augmentation an toàn
+- Sử dụng HorizontalFlip, Affine (shift ±5%, scale ±10%, rotate ±10°), RandomBrightnessContrast ±0.2, CLAHE, RandomGamma, GaussNoise nhẹ, CoarseDropout (khối đen ≤16x16, p=0.3, khối đen tương đối nhỏ tránh phủ đen vùng quan trọng trong chẩn đoán pneumonia).
+- Lý do: Tránh biến dạng quá mức làm mất đặc trưng bệnh lý. Không dùng VerticalFlip, ElasticTransform, RandomCrop.
+- Không dùng MixUp trong transforms vì sẽ triển khai trong training loop (Phase 5) với tỷ lệ 10%, alpha=0.2 do nguy cơ tạo ảnh "quái dị" khi trộn ảnh người lớn/trẻ em.
+- Label smoothing = 0.1 áp dụng trong Dataset cho tập train.
+
+### 9. Cập nhật API Albumentations ≥2.0
+- Các tham số cũ `value`, `fill_value`, `var_limit` không còn dùng. Thay bằng `fill`, `std_range`, `num_holes_range`, `hole_height_range`, `hole_width_range`.

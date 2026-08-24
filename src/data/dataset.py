@@ -14,12 +14,13 @@ class ChestXrayDataset(Dataset):
     Đọc ảnh grayscale, chuyển sang 3 kênh, áp dụng transform.
     """
 
-    def __init__(self, df, transform=None, error_log_path=None):
+    def __init__(self, df, transform=None, error_log_path=None, label_smoothing=0.0):
         """
         Args:
             df: DataFrame chứa ít nhất cột 'path' (đường dẫn ảnh) và 'label' (NORMAL/PNEUMONIA)
             transform: Albumentations Compose
             error_log_path: Tệp tùy chọn để lưu các ảnh không đọc được.
+            label_smoothing: Tỷ lệ label smoothing.
         """
         if transform is None:
             raise ValueError(
@@ -33,16 +34,25 @@ class ChestXrayDataset(Dataset):
         self.transform = transform
         self.error_log_path = Path(error_log_path) if error_log_path else None
         self.failed_samples = []
+        self.label_smoothing = label_smoothing #bổ sung label smoothing để tránh overfitting do label cứng
         #có 4 thuộc tính của code: df: các ảnh, transform: các phép biến đổi từ module transforms.py
         #error_log_path: đường dẫn tệp lỗi, failed_samples: danh sách các mẫu lỗi
 
     def __len__(self):
         return len(self.df)
 
+    def _smooth_label(self, label):
+        """Áp dụng label smoothing cho nhãn binary (0 hoặc 1)."""
+        # label: 0 hoặc 1
+        if self.label_smoothing > 0:
+            return label * (1 - self.label_smoothing) + 0.5 * self.label_smoothing
+        return label
+
     def __getitem__(self, idx):
         row = self.df.iloc[idx]
         img_path = row['path']
         label = 1 if row['label'] == 'PNEUMONIA' else 0  # 0: NORMAL, 1: PNEUMONIA
+        label = self._smooth_label(label)
 
         # Đọc ảnh dưới dạng grayscale (1 kênh)
         try:

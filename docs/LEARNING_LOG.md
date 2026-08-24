@@ -37,3 +37,18 @@
 ### 7. PyTorch Dataset & DataLoader
 - Custom Dataset kế thừa torch.utils.data.Dataset, cần __len__, __getitem__.
 - DataLoader quản lý batch, shuffle, num_workers.
+
+## Phase 3: Augmentation
+
+### 8. Các phép augmentation cho ảnh y tế
+- Cần chọn phép biến đổi không phá vỡ cấu trúc giải phẫu: tránh VerticalFlip, biến dạng đàn hồi, crop bỏ vùng ngoại vi.
+- Augmentation cường độ (độ sáng, tương phản, gamma) mô phỏng sự khác biệt máy chụp, giúp mô hình bền vững.
+- RandomErasing (CoarseDropout) với khối nhỏ giúp mô hình không học vẹt, phù hợp bài toán classification.
+
+### 9. Label smoothing
+- Kỹ thuật regular hóa nhãn: thay nhãn cứng 0/1 bằng nhãn mềm (0.05/0.95). Giúp mô hình không quá tự tin, cải thiện calibration.
+- Triển khai trong Dataset: `label = label * (1 - smoothing) + 0.5 * smoothing`.
+
+### 10. Albumentations API mới
+- Khi dùng phiên bản ≥2.0, cần cập nhật tham số: `fill`, `std_range`, `num_holes_range`.
+- Lưu ý kiểm tra warnings để điều chỉnh.
